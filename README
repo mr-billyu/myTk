@@ -1,0 +1,12 @@
+myTk.py contains the class myTk which is a layer between the
+application code and the tkinter class. This is similar to
+a previous written Perl class.
+
+pgm.py is a program that uses myTk. It's purpose is to search
+a files in a specified directory for a string. The file containing
+the string can be opened by double clicking on the line in the
+result window.
+
+think.py is a program used to test out simple concepts before
+adding them to myTk.py and/or pgm.py
+
