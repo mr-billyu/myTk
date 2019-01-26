@@ -26,12 +26,15 @@ def get_entry(event='x'):
 def get_selected(event):
     global directory 
     selection = gui.getlistselection('results').split(":", 2)
-    filename = directory + selection[0]
+    filename = directory + '/' + selection[0]
     os.system('lxterminal -e less +' + selection[1] + ' ' + filename)
 
 #=========================================================================
-parser = argparse.ArgumentParser()
-parser.add_argument('--directory', help='Directory to search')
+parser = argparse.ArgumentParser(description='GUI program that searches' +
+                                             ' all *.txt files in a' +
+                                             ' directory for entered' +
+                                             ' parameter.')
+parser.add_argument('directory', help='Directory to search')
 args = parser.parse_args()
 directory = args.directory
 print(directory)
