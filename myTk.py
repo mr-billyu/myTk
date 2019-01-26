@@ -28,6 +28,7 @@ class myTk():
                                 )
                                )
 
+        widget = obj.textbox('id')
         widget = obj.textentry('id', 'prompt', size)
 
     Get Data Methods:
@@ -37,6 +38,9 @@ class myTk():
         []        = obj.getallsellistline('id')
         top       = obj.getlisttop('id')
         value     = obj.getcheckbutton('id')
+        []        = obj.gettextall('id')
+        value     = obj.gettextindex('id')
+        value     = obj.gettextselection('id')
 
     Set/Clear Data Methods:
         obj.clearlist('id')
@@ -46,6 +50,9 @@ class myTk():
         obj.setlisttop('id', 'linenbr')
         obj.setentry('id', value)
         obj.setcheckbutton('id', value)
+        obj.cleartext('id')
+        obj.settext('id', 'line')
+        obj.settextpos('id', value)
 
     Action Methods:
         obj.bindentry('id', '<key>', callbackfunc)
@@ -65,6 +72,7 @@ class myTk():
     def __init__(self):
         self.entry = {} 
         self.lbox = {}
+        self.tbox = {}
         self.ckbutton = {}
 
     def win(self, title, geometry):
@@ -182,22 +190,24 @@ class myTk():
         self.ckbutton[id]['value'].set(value)
         
 
-    '''
-    def textbox(self):
-        self.textBox = Text(self.root, bg="white", fg="black")
-        self.textBox.grid(column=0, row=1, sticky=(N, S, W, E))
+    def textbox(self, id):
+        vsb = Scrollbar(self.frm, orient=VERTICAL)
+        vsb.pack(side=RIGHT, fill=Y)
 
+        hsb = Scrollbar(self.frm, orient=HORIZONTAL)
+        hsb.pack(side=BOTTOM, fill=X)
 
-        self.textboxVScrollbar = Scrollbar(self.root, orient="vertical",
-                                           command = self.textBox.yview)
-        self.textboxVScrollbar.grid(column=0, row=1, sticky=(N, S, E))
+        self.tbox[id] = Text(self.frm, bg="white", fg="black",
+                             yscrollcommand=vsb.set,
+                             xscrollcommand=hsb.set)
+        self.tbox[id].pack(side=LEFT, expand=1, fill=BOTH)
 
-        self.textboxHScrollbar = Scrollbar(self.root, orient="horizontal",
-                                           command = self.textBox.xview)
-        self.textboxHScrollbar.grid(column=0, row=1, sticky=(S, W, E))
+        vsb.config(command=self.tbox[id].yview)
+        hsb.config(command=self.tbox[id].xview)
 
+    def settext(self, id, line):
+        self.tbox[id].insert('end', line)
 
-    '''
 
     def About(self):
         print("Python3 tkinker sample program.")
@@ -243,13 +253,20 @@ if __name__ == "__main__":
     app.checkbutton('word', 'Word', get_word)
 
     app.frame('expand')
+    '''
+    # Begin of listbox Test Code
     app.listbox('results')
     app.bindlist('results', '<Double-1>', get_selected)
     for i in range(100):
         app.setlist('results', "this is a test line " + str(i))
-    #app.setlisttop('results', 3)
-    #app.setlistpos('results', 50)
-    #app.setlistsel('results', 45)
+    app.setlisttop('results', 3)
+    app.setlistpos('results', 50)
+    app.setlistsel('results', 45)
+    # End Of listbox Test Code
+    '''
+    app.textbox('display')
+    for i in range(200):
+        app.settext('display', "this is a test of textbox" + str(i))
 
 
 
