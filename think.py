@@ -1,8 +1,22 @@
 #!/usr/bin/env python3
 
-from tkinter import *
-from tkinter import ttk
+import argparse
+parser = argparse.ArgumentParser(description='GUI program that searches' +
+                                             ' all *.txt files in a' +
+                                             ' directory for entered' +
+                                             ' parameter.')
+parser.add_argument('directory', help='Directory to search')
+parser.add_argument('filetype', help='Comma separate list of file types')
+args = parser.parse_args()
+directory = args.directory
+filetype = args.filetype
+print(directory)
+print(filetype)
+for file in filetype.split(','):
+    print(file)
 
+
+'''
 import re
 line = "/home/pi/ssh/BillyU_data/Bill/Documents/raspberrypi/test.txt:abcd"
 m = re.match(r'(^\S*/)(\S*.txt:.*)', line)
@@ -10,8 +24,7 @@ m = re.match(r'(^\S*/)(\S*.txt:.*)', line)
 print(m.group(0))
 print(m.group(1))
 print(m.group(2))
-
-
+'''
 
 '''
 import os
@@ -26,6 +39,8 @@ for line in results:
 '''
 
 '''
+from tkinter import *
+from tkinter import ttk
 root = Tk()
 scrollbar = Scrollbar(root)
 scrollbar.pack( side = RIGHT, fill = Y )
@@ -41,6 +56,8 @@ mainloop()
 '''
 
 '''
+from tkinter import *
+from tkinter import ttk
 def cb(evnt):
     print(v.get())
     v.set("")
@@ -55,6 +72,8 @@ win.mainloop()
 '''
 
 '''
+from tkinter import *
+from tkinter import ttk
 def cb(evnt):
     print(entry.get())
 

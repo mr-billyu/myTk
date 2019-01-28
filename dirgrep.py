@@ -8,6 +8,8 @@ import re
 
 def get_entry(event='x'):
     global directory
+    global filetypes
+
     gui.clearlist('results')
     param = gui.getentry('searchfor')
     option = '-n'
@@ -16,8 +18,15 @@ def get_entry(event='x'):
     if gui.getcheckbutton('word') == 1:
         option = option + 'w'
     option = option + ' '
-    results = os.popen("grep " + option + " " + param + " " +
-             directory + "/*.txt")
+    files = ''
+    for ft in filetypes.split(','):
+        print('before:' + ft)
+        ft = ft.replace(" ", "")
+        print('after:' + ft)
+        files = files + directory + "/" + ft + " "
+    print(files)
+    results = os.popen("grep " + option + " " + param + " " + files)
+    print("grep " + option + " " + param + " " + files)
     for line in results:
         m = re.match(r'(^\S*/)(\S*.txt:.*)', line)
         gui.setlist('results', m.group(2))
@@ -30,14 +39,17 @@ def get_selected(event):
     os.system('lxterminal -e less +' + selection[1] + ' ' + filename)
 
 #=========================================================================
-parser = argparse.ArgumentParser(description='GUI program that searches' +
-                                             ' all *.txt files in a' +
-                                             ' directory for entered' +
-                                             ' parameter.')
+parser = argparse.ArgumentParser(
+                  description='GUI program that searches' +
+                              ' all spcified file types in a' +
+                              ' directory for entered' +
+                              ' parameter.')
 parser.add_argument('directory', help='Directory to search')
+parser.add_argument('filetypes', help='Comma separate list of file' +
+                                      ' types')
 args = parser.parse_args()
 directory = args.directory
-print(directory)
+filetypes = args.filetypes
 
 gui = myTk()
 Win = gui.win('Search Pi Notes', '640x480')
