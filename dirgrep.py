@@ -14,10 +14,17 @@ def get_entry(event='x'):
     if gui.getcheckbutton('word') == 1:
         option = option + 'w'
     option = option + ' '
-    results = os.popen("grep " + option + " " + param + " " +
-             directory + "/*.txt")
+    files = ''
+    types = '('
+    for ft in filetypes.split(','):
+        ft = ft.replace(" ", "")
+        files = files + directory + "/*." + ft + " "
+        types = types + ft + '|'
+    types = types + ')'
+    results = os.popen("grep " + option + " " + param + " " + files)
     for line in results:
-        m = re.match(r'(^\S*/)(\S*.txt:.*)', line)
+        exp = '(^\S*/)(\S*' + types + ':.*)'
+        m = re.match(exp, line)
         gui.setlist('results', m.group(2))
     gui.setlist('results', '======END======')
 
