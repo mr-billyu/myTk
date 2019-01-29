@@ -36,14 +36,19 @@ def get_selected(event):
 def main():
     global gui
     global directory
+    global filetypes
     parser = argparse.ArgumentParser(
                          description='GUI program that searches' +
                                      ' all *.txt files in a' +
                                      ' directory for entered' +
                                      ' parameter.')
-    parser.add_argument('directory', help='Directory to search')
+    parser.add_argument('directory', help='Directory to search.' +
+                                          ' ie. /home/pi/Documents')
+    parser.add_argument('filetypes', help='Comma separated list of file' +
+                                          ' type. ie. py,txt,pl')
     args = parser.parse_args()
     directory = args.directory
+    filetypes = args.filetypes
     print(directory)
 
     gui = myTk()
