@@ -7,9 +7,6 @@ import re
 
 
 def get_entry(event='x'):
-    global directory
-    global filetypes
-
     gui.clearlist('results')
     param = gui.getentry('searchfor')
     option = '-n'
@@ -19,21 +16,20 @@ def get_entry(event='x'):
         option = option + 'w'
     option = option + ' '
     files = ''
+    types = '('
     for ft in filetypes.split(','):
-        print('before:' + ft)
         ft = ft.replace(" ", "")
-        print('after:' + ft)
-        files = files + directory + "/" + ft + " "
-    print(files)
+        files = files + directory + "/*." + ft + " "
+        types = types + ft + '|'
+    types = types + ')'
     results = os.popen("grep " + option + " " + param + " " + files)
-    print("grep " + option + " " + param + " " + files)
     for line in results:
-        m = re.match(r'(^\S*/)(\S*.txt:.*)', line)
+        exp = '(^\S*/)(\S*' + types + ':.*)'
+        m = re.match(exp, line)
         gui.setlist('results', m.group(2))
     gui.setlist('results', '======END======')
 
 def get_selected(event):
-    global directory 
     selection = gui.getlistselection('results').split(":", 2)
     filename = directory + '/' + selection[0]
     os.system('lxterminal -e less +' + selection[1] + ' ' + filename)
@@ -44,9 +40,10 @@ parser = argparse.ArgumentParser(
                               ' all spcified file types in a' +
                               ' directory for entered' +
                               ' parameter.')
-parser.add_argument('directory', help='Directory to search')
+parser.add_argument('directory', help='Directory to search' +
+                                       'ie. /home/pi/Documents')
 parser.add_argument('filetypes', help='Comma separate list of file' +
-                                      ' types')
+                                      ' types. ie. py,txt,pl')
 args = parser.parse_args()
 directory = args.directory
 filetypes = args.filetypes
