@@ -21,6 +21,8 @@ def get_entry(event='x'):
         files = files + directory + "/*." + ft + " "
         types = types + ft + '|'
     types = types + ')'
+    types = types.replace('|)', ')')
+
     results = os.popen("grep " + option + " " + param + " " + files)
     for line in results:
         exp = '(^\S*/)(\S*' + types + ':.*)'
