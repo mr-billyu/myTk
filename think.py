@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+for s in ('(txt)', '(txt|)', '(txt|py)', '(txt|py|)'):
+    print(s + ': ' + s.replace('|)', ')'))
+
+'''
 import argparse
 parser = argparse.ArgumentParser(description='GUI program that searches' +
                                              ' all *.txt files in a' +
@@ -14,7 +18,7 @@ print(directory)
 print(filetype)
 for file in filetype.split(','):
     print(file)
-
+'''
 
 '''
 import re
