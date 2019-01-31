@@ -14,6 +14,17 @@ def get_entry(event='x'):
     if gui.getcheckbutton('word') == 1:
         option = option + 'w'
     option = option + ' '
+    search_and_report(param, option)
+
+def clear_entry(event='x'):
+    gui.setentry('searchfor', '')
+
+def set_entry_and_search(param):
+    gui.setentry('searchfor', param)
+    option = '-n '
+    search_and_report(param, option)
+
+def search_and_report(param, option):
     files = ''
     types = '('
     for ft in filetypes.split(','):
@@ -41,17 +52,19 @@ def main():
     global filetypes
     parser = argparse.ArgumentParser(
                          description='GUI program that searches' +
-                                     ' all *.txt files in a' +
-                                     ' directory for entered' +
+                                     ' all specified file types' +
+                                     ' in a directory for entered' +
                                      ' parameter.')
     parser.add_argument('directory', help='Directory to search.' +
                                           ' ie. /home/pi/Documents')
     parser.add_argument('filetypes', help='Comma separated list of file' +
-                                          ' type. ie. py,txt,pl')
+                                          ' types. ie. py,txt,pl')
+    parser.add_argument('--searchfor', help='Optional string to search' +
+                                            ' for', nargs='?')
     args = parser.parse_args()
     directory = args.directory
     filetypes = args.filetypes
-    print(directory)
+    searchfor = args.searchfor
 
     gui = myTk()
     Win = gui.win('Search Pi Notes', '640x480')
@@ -63,6 +76,7 @@ def main():
     gui.frame('fill')
     gui.textentry('searchfor', 'Find', 50)
     gui.bindentry('searchfor', '<Return>', get_entry)
+    gui.bindentry('searchfor', '<3>', clear_entry)
     gui.focusentry('searchfor')
     gui.checkbutton('case', 'Case', get_entry)
     gui.checkbutton('word', 'Word', get_entry)
@@ -70,6 +84,8 @@ def main():
     gui.frame('expand')
     gui.listbox('results')
     gui.bindlist('results', '<Double-1>', get_selected)
+    if searchfor:
+        set_entry_and_search(searchfor)
 
     Win.mainloop()
 
