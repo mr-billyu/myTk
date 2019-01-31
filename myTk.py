@@ -88,10 +88,8 @@ class myTk():
             for entry in column:             
                 if isinstance(entry, str):
                     menubar.add_cascade(label=entry, menu=menu)
-                    print(entry)
                 else:
                     menu.add_command(label=entry[0], command=entry[1])
-                    print(entry[0], entry[1])
         self.root.config(menu=menubar)
 
     def frame(self, option):
