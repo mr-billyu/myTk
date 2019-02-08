@@ -167,7 +167,7 @@ class myTk():
         self.lbox[id].insert('end', data)
 
     def setlistsel(self, id, linenbr):
-        self.lbox[id].selectionSet(linenbr)
+        self.lbox[id].select_set(linenbr)
 
     def setlistpos(self, id, linenbr):
         self.lbox[id].see(linenbr)
@@ -205,9 +205,34 @@ class myTk():
         vsb.config(command=self.tbox[id].yview)
         hsb.config(command=self.tbox[id].xview)
 
+    def bindtext(self, id, key, callbackfunc):
+        self.tbox[id].bind(key, callbackfunc)
+
+    def gettextall(self, id):
+        print("gettextall()")
+        text = self.tbox[id].get('1.0', 'end')
+        return(text)
+
+    def gettextindex(self, id):
+        print("gettextindex()")
+        index = self.tbox[id].index('insert')
+        return(index)
+
+    def gettextselection(self, id):
+        print("gettextselection()")
+        selection = self.tbox[id].selection_get()
+        return(selection)
+
+    def cleartext(self, id):
+        print("cleartext()")
+        self.tbox[id].delete('0.0', 'end')
+
     def settext(self, id, line):
         self.tbox[id].insert('end', line)
 
+    def settextpos(self, id, position):
+        print("settextpos()")
+        self.tbox[id].see(position)
 
     def About(self):
         print("Python3 tkinker sample program.")
@@ -218,6 +243,8 @@ class myTk():
 ==========================================================================
 '''
 if __name__ == "__main__":
+    tests = ('textentry', 'textbox')
+
     def about():
         print("about test")
 
@@ -225,8 +252,11 @@ if __name__ == "__main__":
         print(app.getentry('searchfor'))
         app.setentry('searchfor', "")
         
-    def get_selected(arg):
+    def get_selected_line(arg):
         print(app.getlistselection('results'))
+
+    def get_selected_text(arg):
+        print(app.gettextselection('display'))
 
     def get_case():
         print("get case")
@@ -245,41 +275,30 @@ if __name__ == "__main__":
                )
     app.menubar(menudata)
 
-    app.frame('fill')
-    app.textentry('searchfor', 'test prompt', 50)
-    app.bindentry('searchfor', '<Return>', get_entry)
-    app.focusentry('searchfor')
-    app.checkbutton('case', 'Case', get_case) 
-    app.checkbutton('word', 'Word', get_word)
+    if 'textentry' in tests:
+        app.frame('fill')
+        app.textentry('searchfor', 'test prompt', 50)
+        app.bindentry('searchfor', '<Return>', get_entry)
+        app.focusentry('searchfor')
+        app.checkbutton('case', 'Case', get_case) 
+        app.checkbutton('word', 'Word', get_word)
 
-    app.frame('expand')
-    '''
-    # Begin of listbox Test Code
-    app.listbox('results')
-    app.bindlist('results', '<Double-1>', get_selected)
-    for i in range(100):
-        app.setlist('results', "this is a test line " + str(i))
-    app.setlisttop('results', 3)
-    app.setlistpos('results', 50)
-    app.setlistsel('results', 45)
-    # End Of listbox Test Code
-    '''
-    app.textbox('display')
-    for i in range(200):
-        app.settext('display', "this is a test of textbox" + str(i))
+    if 'listbox' in tests: 
+        app.frame('expand')
+        app.listbox('results')
+        app.bindlist('results', '<Double-1>', get_selected_line)
+        for i in range(100):
+            app.setlist('results', "this is a test line " + str(i))
+        app.setlisttop('results', 3)
+        app.setlistpos('results', 50)
+        app.setlistsel('results', 45)
 
-
-
-
-
-    '''
-    app.entry()
-    app.listbox()
-    app.content_frame()
-    app.textbox()
-    app.footer_frame()
-    '''
-
+    if 'textbox' in tests:
+        app.frame('expand')
+        app.textbox('display')
+        app.bindtext('display', '<Double-1>', get_selected_text)
+        for i in range(200):
+            app.settext('display', "this is a test of textbox" + str(i))
 
     app.root.mainloop()
 
