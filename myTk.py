@@ -51,8 +51,8 @@ class myTk():
         obj.setentry('id', value)
         obj.setcheckbutton('id', value)
         obj.cleartext('id')
-        obj.settext('id', 'line')
-        obj.settextpos('id', value)
+        obj.inserttext('id', 'index', 'line')
+        obj.settextpos('id', 'index')
 
     Action Methods:
         obj.bindentry('id', '<key>', callbackfunc)
@@ -63,7 +63,8 @@ class myTk():
 
     Misc Methods:
 
-    Note: Some valid <key.'s: <Return>, <Double-1>, <3>, <Control-1>, etc.
+    Note: Some valid keys: <Return>, <Button-1>, <Double-Button-3>, 
+             'a', '1', 'b', etc.
           Some valid colors: 'LightSteelBlue', 'LightSkyBlue', 'white',
           'black', 'cyan', 'DeepSkyBlue, 'tomato', 'gold', 'burlywood',
           'chocolate', 'DodgerBlue', 'navyblue', etc.
@@ -209,30 +210,25 @@ class myTk():
         self.tbox[id].bind(key, callbackfunc)
 
     def gettextall(self, id):
-        print("gettextall()")
-        text = self.tbox[id].get('1.0', 'end')
-        return(text)
+        return(self.tbox[id].get('1.0', 'end'))
 
     def gettextindex(self, id):
-        print("gettextindex()")
-        index = self.tbox[id].index('insert')
-        return(index)
+        #Returns linenbr.lineposition.
+        return(self.tbox[id].index('insert'))
 
     def gettextselection(self, id):
-        print("gettextselection()")
-        selection = self.tbox[id].selection_get()
-        return(selection)
+        return(self.tbox[id].selection_get())
 
     def cleartext(self, id):
-        print("cleartext()")
         self.tbox[id].delete('0.0', 'end')
 
-    def settext(self, id, line):
-        self.tbox[id].insert('end', line)
+    def inserttext(self, id, index, line):
+        #index 'linenbr.linepos'
+        self.tbox[id].insert(index, line)
 
-    def settextpos(self, id, position):
-        print("settextpos()")
-        self.tbox[id].see(position)
+    def settextpos(self, id, index):
+        #index 'linenbr.linepos'
+        self.tbox[id].see(index)
 
     def About(self):
         print("Python3 tkinker sample program.")
@@ -257,6 +253,18 @@ if __name__ == "__main__":
 
     def get_selected_text(arg):
         print(app.gettextselection('display'))
+
+    def get_textbox_index(arg):
+        print(app.gettextindex('display'))
+
+    def clear_textbox(arg):
+        app.cleartext('display')
+
+    def set_textbox(arg):
+        app.inserttext('display', '0.0', '0123456789012345678901234567890')
+
+    def set_textbox_pos(arg):
+        app.inserttext('display', '1.10', 'abcdefg')
 
     def get_case():
         print("get case")
@@ -286,7 +294,7 @@ if __name__ == "__main__":
     if 'listbox' in tests: 
         app.frame('expand')
         app.listbox('results')
-        app.bindlist('results', '<Double-1>', get_selected_line)
+        app.bindlist('results', '<Double-Button-1>', get_selected_line)
         for i in range(100):
             app.setlist('results', "this is a test line " + str(i))
         app.setlisttop('results', 3)
@@ -296,9 +304,15 @@ if __name__ == "__main__":
     if 'textbox' in tests:
         app.frame('expand')
         app.textbox('display')
-        app.bindtext('display', '<Double-1>', get_selected_text)
+        app.bindtext('display', '<Button-3>', get_selected_text)
+        app.bindtext('display', '<Button-2>', get_textbox_index)
+        app.bindtext('display', 'a', clear_textbox)
+        app.bindtext('display', 'b', set_textbox)
+        app.bindtext('display', 'c', set_textbox_pos)
         for i in range(200):
-            app.settext('display', "this is a test of textbox" + str(i))
+            app.inserttext('display', 'end', "this is a test of textbox" + 
+                           str(i))
+        print(app.gettextall('display'))
 
     app.root.mainloop()
 
