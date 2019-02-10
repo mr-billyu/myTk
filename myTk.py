@@ -17,15 +17,15 @@ class myTk():
         widget = obj.list('id')
         widget = obj.multilist('id')
         widget = obj.menubar(menudata)
-            where:  menudata = (("File", 
-                                    ("New", create_file), 
-                                    ("Save", save_file),
-                                    ("Quit", root.quit)
-                                ),
+            where:  menudata = (("File", ("New", create_file), 
+                                         ("Save", save_file),
+                                         ("Quit", root.quit)),
 
-                                ("Help", 
-                                    ("About", about)
-                                )
+                                ("Edit", ("Copy", copy_selection),
+                                         ("Paste", paste_selection),
+                                         ("Clear", clear_screen)),
+
+                                ("Help", ("About", about))
                                )
 
         widget = obj.textbox('id')
@@ -240,6 +240,7 @@ class myTk():
 '''
 if __name__ == "__main__":
     tests = ('textentry', 'textbox')
+    selection = ''
 
     def about():
         print("about test")
@@ -251,17 +252,22 @@ if __name__ == "__main__":
     def get_selected_line(arg):
         print(app.getlistselection('results'))
 
-    def get_selected_text(arg):
-        print(app.gettextselection('display'))
+    def get_selected_text():
+        global selection
+        selection = app.gettextselection('display')
 
     def get_textbox_index(arg):
         print(app.gettextindex('display'))
 
-    def clear_textbox(arg):
+    def clear_textbox():
         app.cleartext('display')
 
     def set_textbox(arg):
         app.inserttext('display', '0.0', '0123456789012345678901234567890')
+
+    def paste():
+        index = app.gettextindex('display')
+        app.inserttext('display', index, selection)
 
     def set_textbox_pos(arg):
         app.inserttext('display', '1.10', 'abcdefg')
@@ -278,9 +284,20 @@ if __name__ == "__main__":
     Win = app.win('Tkinter Template', '640x480')
 
     app.frame('fill')
-    menudata = (("File", ("Quit", Win.quit), ("Exit", Win.quit)),
-                ("Help", ("About", about))
-               )
+    if 'textbox' in tests:
+        menudata = (("File", ("Quit", Win.quit)), 
+
+                    ("Edit", ("Copy", get_selected_text), 
+                             ("Paste", paste),
+                             ("Clear", clear_textbox)),
+
+                    ("Help", ("About", about))
+                   )   
+    else:
+        menudata = (("File", ("Quit", Win.quit)),
+
+                    ("Help", ("About", about))
+                   )
     app.menubar(menudata)
 
     if 'textentry' in tests:
@@ -304,11 +321,7 @@ if __name__ == "__main__":
     if 'textbox' in tests:
         app.frame('expand')
         app.textbox('display')
-        app.bindtext('display', '<Button-3>', get_selected_text)
         app.bindtext('display', '<Button-2>', get_textbox_index)
-        app.bindtext('display', 'a', clear_textbox)
-        app.bindtext('display', 'b', set_textbox)
-        app.bindtext('display', 'c', set_textbox_pos)
         for i in range(200):
             app.inserttext('display', 'end', "this is a test of textbox" + 
                            str(i))
