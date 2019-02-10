@@ -75,6 +75,7 @@ class myTk():
         self.lbox = {}
         self.tbox = {}
         self.ckbutton = {}
+        self.btn = {}
 
     def win(self, title, geometry):
         self.root = Tk()
@@ -230,6 +231,10 @@ class myTk():
         #index 'linenbr.linepos'
         self.tbox[id].see(index)
 
+    def button(self, desc, color, func):
+        self.btn[desc] = Button(text=desc, background=color, command=func)
+        self.btn[desc].pack(side='left')
+
     def About(self):
         print("Python3 tkinker sample program.")
 
@@ -239,15 +244,15 @@ class myTk():
 ==========================================================================
 '''
 if __name__ == "__main__":
-    tests = ('textentry', 'textbox')
+    tests = ('textentry', 'textbox', 'button')
     selection = ''
 
     def about():
         print("about test")
 
     def get_entry(arg):
-        print(app.getentry('searchfor'))
-        app.setentry('searchfor', "")
+        print(app.getentry('input_1'))
+        app.setentry('input_1', "")
         
     def get_selected_line(arg):
         print(app.getlistselection('results'))
@@ -271,6 +276,10 @@ if __name__ == "__main__":
 
     def set_textbox_pos(arg):
         app.inserttext('display', '1.10', 'abcdefg')
+
+    def insert_button():
+        print('test button pressed')
+        paste()
 
     def get_case():
         print("get case")
@@ -302,9 +311,9 @@ if __name__ == "__main__":
 
     if 'textentry' in tests:
         app.frame('fill')
-        app.textentry('searchfor', 'test prompt', 50)
-        app.bindentry('searchfor', '<Return>', get_entry)
-        app.focusentry('searchfor')
+        app.textentry('input_1', 'User Input', 50)
+        app.bindentry('input_1', '<Return>', get_entry)
+        app.focusentry('input_1')
         app.checkbutton('case', 'Case', get_case) 
         app.checkbutton('word', 'Word', get_word)
 
@@ -323,9 +332,15 @@ if __name__ == "__main__":
         app.textbox('display')
         app.bindtext('display', '<Button-2>', get_textbox_index)
         for i in range(200):
-            app.inserttext('display', 'end', "this is a test of textbox" + 
-                           str(i))
+            app.inserttext('display', str(i) + '.0', 
+                            "this is a test of textbox" + str(i) + "\n")
         print(app.gettextall('display'))
+
+    if 'button' in tests:
+        app.frame('fill')
+        app.button('copy', 'white', get_selected_text)
+        app.button('paste', 'LightSteelBlue', paste)
+        app.button('clear', 'DodgerBlue', clear_textbox)
 
     app.root.mainloop()
 
