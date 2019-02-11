@@ -13,7 +13,7 @@ class myTk():
         widget = obj.button('desc', 'color', 'command')
         widget = obj.checkbutton('id', 'desc', 'command')
         widget = obj.frame(<'fill'|'expand'|''>)
-        widget = obj.label('r|l|r', 'text')
+        widget = obj.label('l|c|r', 'text')
         widget = obj.list('id')
         widget = obj.multilist('id')
         widget = obj.menubar(menudata)
@@ -105,8 +105,17 @@ class myTk():
         else:
             self.frm.pack(side=TOP)
 
+    def label(self, position, text):
+        if position == 'l':
+            position = 'left'
+        elif position == 'c':
+            position = 'top'
+        else:
+            position = 'right'
+        ttk.Label(self.frm, text=text).pack(side=position)
+
     def textentry(self, id, prompt, width):
-        ttk.Label(self.frm, text=prompt).pack(side=LEFT)
+        self.label('l', 'User Input')
         self.entry[id] = {} 
         self.entry[id]['value'] = StringVar() 
         self.entry[id]['obj'] = Entry(self.frm, width=width,
@@ -244,7 +253,7 @@ class myTk():
 ==========================================================================
 '''
 if __name__ == "__main__":
-    tests = ('textentry', 'textbox', 'button')
+    tests = ('textentry', 'textbox', 'button', 'label')
     selection = ''
 
     def about():
@@ -308,6 +317,14 @@ if __name__ == "__main__":
                     ("Help", ("About", about))
                    )
     app.menubar(menudata)
+
+    if 'label' in tests:
+        app.frame('fill')
+        app.label('l', 'left')
+        app.frame('fill')
+        app.label('c', 'center')
+        app.frame('fill')
+        app.label('r', 'right')
 
     if 'textentry' in tests:
         app.frame('fill')
