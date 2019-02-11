@@ -13,19 +13,19 @@ class myTk():
         widget = obj.button('desc', 'color', 'command')
         widget = obj.checkbutton('id', 'desc', 'command')
         widget = obj.frame(<'fill'|'expand'|''>)
-        widget = obj.label('r|l|r', 'text')
+        widget = obj.label('l|c|r', 'text')
         widget = obj.list('id')
         widget = obj.multilist('id')
         widget = obj.menubar(menudata)
-            where:  menudata = (("File", 
-                                    ("New", create_file), 
-                                    ("Save", save_file),
-                                    ("Quit", root.quit)
-                                ),
+            where:  menudata = (("File", ("New", create_file), 
+                                         ("Save", save_file),
+                                         ("Quit", root.quit)),
 
-                                ("Help", 
-                                    ("About", about)
-                                )
+                                ("Edit", ("Copy", copy_selection),
+                                         ("Paste", paste_selection),
+                                         ("Clear", clear_screen)),
+
+                                ("Help", ("About", about))
                                )
 
         widget = obj.textbox('id')
@@ -51,8 +51,8 @@ class myTk():
         obj.setentry('id', value)
         obj.setcheckbutton('id', value)
         obj.cleartext('id')
-        obj.settext('id', 'line')
-        obj.settextpos('id', value)
+        obj.inserttext('id', 'index', 'line')
+        obj.settextpos('id', 'index')
 
     Action Methods:
         obj.bindentry('id', '<key>', callbackfunc)
@@ -63,7 +63,8 @@ class myTk():
 
     Misc Methods:
 
-    Note: Some valid <key.'s: <Return>, <Double-1>, <3>, <Control-1>, etc.
+    Note: Some valid keys: <Return>, <Button-1>, <Double-Button-3>, 
+             'a', '1', 'b', etc.
           Some valid colors: 'LightSteelBlue', 'LightSkyBlue', 'white',
           'black', 'cyan', 'DeepSkyBlue, 'tomato', 'gold', 'burlywood',
           'chocolate', 'DodgerBlue', 'navyblue', etc.
@@ -74,6 +75,7 @@ class myTk():
         self.lbox = {}
         self.tbox = {}
         self.ckbutton = {}
+        self.btn = {}
 
     def win(self, title, geometry):
         self.root = Tk()
@@ -101,8 +103,17 @@ class myTk():
         else:
             self.frm.pack(side=TOP)
 
+    def label(self, position, text):
+        if position == 'l':
+            position = 'left'
+        elif position == 'c':
+            position = 'top'
+        else:
+            position = 'right'
+        ttk.Label(self.frm, text=text).pack(side=position)
+
     def textentry(self, id, prompt, width):
-        ttk.Label(self.frm, text=prompt).pack(side=LEFT)
+        self.label('l', 'User Input')
         self.entry[id] = {} 
         self.entry[id]['value'] = StringVar() 
         self.entry[id]['obj'] = Entry(self.frm, width=width,
@@ -165,7 +176,7 @@ class myTk():
         self.lbox[id].insert('end', data)
 
     def setlistsel(self, id, linenbr):
-        self.lbox[id].selectionSet(linenbr)
+        self.lbox[id].select_set(linenbr)
 
     def setlistpos(self, id, linenbr):
         self.lbox[id].see(linenbr)
@@ -203,9 +214,33 @@ class myTk():
         vsb.config(command=self.tbox[id].yview)
         hsb.config(command=self.tbox[id].xview)
 
-    def settext(self, id, line):
-        self.tbox[id].insert('end', line)
+    def bindtext(self, id, key, callbackfunc):
+        self.tbox[id].bind(key, callbackfunc)
 
+    def gettextall(self, id):
+        return(self.tbox[id].get('1.0', 'end'))
+
+    def gettextindex(self, id):
+        #Returns linenbr.lineposition.
+        return(self.tbox[id].index('insert'))
+
+    def gettextselection(self, id):
+        return(self.tbox[id].selection_get())
+
+    def cleartext(self, id):
+        self.tbox[id].delete('0.0', 'end')
+
+    def inserttext(self, id, index, line):
+        #index 'linenbr.linepos'
+        self.tbox[id].insert(index, line)
+
+    def settextpos(self, id, index):
+        #index 'linenbr.linepos'
+        self.tbox[id].see(index)
+
+    def button(self, desc, color, func):
+        self.btn[desc] = Button(text=desc, background=color, command=func)
+        self.btn[desc].pack(side='left')
 
     def About(self):
         print("Python3 tkinker sample program.")
@@ -216,15 +251,42 @@ class myTk():
 ==========================================================================
 '''
 if __name__ == "__main__":
+    tests = ('textentry', 'textbox', 'button', 'label')
+    selection = ''
+
     def about():
         print("about test")
 
     def get_entry(arg):
-        print(app.getentry('searchfor'))
-        app.setentry('searchfor', "")
+        print(app.getentry('input_1'))
+        app.setentry('input_1', "")
         
-    def get_selected(arg):
+    def get_selected_line(arg):
         print(app.getlistselection('results'))
+
+    def get_selected_text():
+        global selection
+        selection = app.gettextselection('display')
+
+    def get_textbox_index(arg):
+        print(app.gettextindex('display'))
+
+    def clear_textbox():
+        app.cleartext('display')
+
+    def set_textbox(arg):
+        app.inserttext('display', '0.0', '0123456789012345678901234567890')
+
+    def paste():
+        index = app.gettextindex('display')
+        app.inserttext('display', index, selection)
+
+    def set_textbox_pos(arg):
+        app.inserttext('display', '1.10', 'abcdefg')
+
+    def insert_button():
+        print('test button pressed')
+        paste()
 
     def get_case():
         print("get case")
@@ -238,46 +300,62 @@ if __name__ == "__main__":
     Win = app.win('Tkinter Template', '640x480')
 
     app.frame('fill')
-    menudata = (("File", ("Quit", Win.quit), ("Exit", Win.quit)),
-                ("Help", ("About", about))
-               )
+    if 'textbox' in tests:
+        menudata = (("File", ("Quit", Win.quit)), 
+
+                    ("Edit", ("Copy", get_selected_text), 
+                             ("Paste", paste),
+                             ("Clear", clear_textbox)),
+
+                    ("Help", ("About", about))
+                   )   
+    else:
+        menudata = (("File", ("Quit", Win.quit)),
+
+                    ("Help", ("About", about))
+                   )
     app.menubar(menudata)
 
-    app.frame('fill')
-    app.textentry('searchfor', 'test prompt', 50)
-    app.bindentry('searchfor', '<Return>', get_entry)
-    app.focusentry('searchfor')
-    app.checkbutton('case', 'Case', get_case) 
-    app.checkbutton('word', 'Word', get_word)
+    if 'label' in tests:
+        app.frame('fill')
+        app.label('l', 'left')
+        app.frame('fill')
+        app.label('c', 'center')
+        app.frame('fill')
+        app.label('r', 'right')
 
-    app.frame('expand')
-    '''
-    # Begin of listbox Test Code
-    app.listbox('results')
-    app.bindlist('results', '<Double-1>', get_selected)
-    for i in range(100):
-        app.setlist('results', "this is a test line " + str(i))
-    app.setlisttop('results', 3)
-    app.setlistpos('results', 50)
-    app.setlistsel('results', 45)
-    # End Of listbox Test Code
-    '''
-    app.textbox('display')
-    for i in range(200):
-        app.settext('display', "this is a test of textbox" + str(i))
+    if 'textentry' in tests:
+        app.frame('fill')
+        app.textentry('input_1', 'User Input', 50)
+        app.bindentry('input_1', '<Return>', get_entry)
+        app.focusentry('input_1')
+        app.checkbutton('case', 'Case', get_case) 
+        app.checkbutton('word', 'Word', get_word)
 
+    if 'listbox' in tests: 
+        app.frame('expand')
+        app.listbox('results')
+        app.bindlist('results', '<Double-Button-1>', get_selected_line)
+        for i in range(100):
+            app.setlist('results', "this is a test line " + str(i))
+        app.setlisttop('results', 3)
+        app.setlistpos('results', 50)
+        app.setlistsel('results', 45)
 
+    if 'textbox' in tests:
+        app.frame('expand')
+        app.textbox('display')
+        app.bindtext('display', '<Button-2>', get_textbox_index)
+        for i in range(200):
+            app.inserttext('display', str(i) + '.0', 
+                            "this is a test of textbox" + str(i) + "\n")
+        print(app.gettextall('display'))
 
-
-
-    '''
-    app.entry()
-    app.listbox()
-    app.content_frame()
-    app.textbox()
-    app.footer_frame()
-    '''
-
+    if 'button' in tests:
+        app.frame('fill')
+        app.button('copy', 'white', get_selected_text)
+        app.button('paste', 'LightSteelBlue', paste)
+        app.button('clear', 'DodgerBlue', clear_textbox)
 
     app.root.mainloop()
 
