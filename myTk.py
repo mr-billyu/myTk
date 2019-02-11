@@ -29,6 +29,7 @@ class myTk():
                                )
 
         widget = obj.textbox('id')
+        widget = obj.rotext('id')
         widget = obj.textentry('id', 'prompt', size)
 
     Get Data Methods:
@@ -44,18 +45,23 @@ class myTk():
 
     Set/Clear Data Methods:
         obj.clearlist('id')
+        obj.clearrotext('id')
+        obj.cleartext('id')
         obj.setlist('id', 'line')
         obj.setlistsel('id', 'linenbr')
         obj.setlistpos('id', 'linenbr')
         obj.setlisttop('id', 'linenbr')
         obj.setentry('id', value)
         obj.setcheckbutton('id', value)
-        obj.cleartext('id')
+        obj.setrotext('id', 'index', 'line')
         obj.inserttext('id', 'index', 'line')
         obj.settextpos('id', 'index')
 
     Action Methods:
         obj.bindentry('id', '<key>', callbackfunc)
+        obj.bindlist('id', '<key>', callbackfunc)
+        obj.bindrotext('id' '<key>', callbackfunc)
+        obj.bindtext('id', '<key>', callbackfunc)
 
     User Configurable buttons:
 
@@ -74,6 +80,7 @@ class myTk():
         self.entry = {} 
         self.lbox = {}
         self.tbox = {}
+        self.rotbox = {}
         self.ckbutton = {}
         self.btn = {}
 
@@ -199,7 +206,6 @@ class myTk():
 
     def setcheckbutton(self, id, value):
         self.ckbutton[id]['value'].set(value)
-        
 
     def textbox(self, id):
         vsb = Scrollbar(self.frm, orient=VERTICAL)
@@ -240,6 +246,41 @@ class myTk():
         #index 'linenbr.linepos'
         self.tbox[id].see(index)
 
+    def rotextbox(self, id):
+        vsb = Scrollbar(self.frm, orient=VERTICAL)
+        vsb.pack(side=RIGHT, fill=Y)
+
+        hsb = Scrollbar(self.frm, orient=HORIZONTAL)
+        hsb.pack(side=BOTTOM, fill=X)
+
+        self.rotbox[id] = Text(self.frm, bg="white", fg="black",
+                               yscrollcommand=vsb.set,
+                               xscrollcommand=hsb.set,
+                               state='disabled')
+        self.rotbox[id].pack(side=LEFT, expand=1, fill=BOTH)
+
+        vsb.config(command=self.rotbox[id].yview)
+        hsb.config(command=self.rotbox[id].xview)
+
+    def bindrotext(self, id, key, callbackfunc):
+        self.rotbox[id].bind(key, callbackfunc)
+ 
+    def insertrotext(self, id, index, line):
+        self.rotbox[id].config(state='normal')
+        #index 'linenbr.linepos'
+        self.rotbox[id].insert(index, line)
+        self.rotbox[id].update()
+        self.rotbox[id].config(state='disabled')
+
+    def clearrotext(self, id, index, line):
+        self.rotbox[id].config(state='normal')
+        self.rotbox[id].delete('0.0', 'end')
+        self.rotbox[id].update()
+        self.rotbox[id].config(state='disabled')
+
+    def getrotextselection(self, id):
+        return(self.rotbox[id].selection_get())
+
     def button(self, desc, color, func):
         self.btn[desc] = Button(text=desc, background=color, command=func)
         self.btn[desc].pack(side='left')
@@ -253,7 +294,7 @@ class myTk():
 ==========================================================================
 '''
 if __name__ == "__main__":
-    tests = ('textentry', 'textbox', 'button', 'label')
+    tests = ('textentry', 'rotextbox', 'label')
     selection = ''
 
     def about():
@@ -285,6 +326,11 @@ if __name__ == "__main__":
 
     def set_textbox_pos(arg):
         app.inserttext('display', '1.10', 'abcdefg')
+
+    def get_selected_rotext(arg):
+        global selection
+        selection = app.getrotextselection('display')
+        print(selection)
 
     def insert_button():
         print('test button pressed')
@@ -351,7 +397,14 @@ if __name__ == "__main__":
         for i in range(200):
             app.inserttext('display', str(i) + '.0', 
                             "this is a test of textbox" + str(i) + "\n")
-        print(app.gettextall('display'))
+
+    if 'rotextbox' in tests:
+        app.frame('expand')
+        app.rotextbox('display')
+        app.bindrotext('display', '<Button-2>', get_selected_rotext)
+        for i in range(200):
+            app.insertrotext('display', str(i) + '.0', 
+                              "this is a test of rotextbox" + str(i) + "\n")
 
     if 'button' in tests:
         app.frame('fill')
