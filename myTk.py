@@ -56,6 +56,7 @@ class myTk():
         obj.setrotext('id', 'index', 'line')
         obj.inserttext('id', 'index', 'line')
         obj.settextpos('id', 'index')
+        obj.setcursor('watch'|'normal')
 
     Action Methods:
         obj.bindentry('id', '<key>', callbackfunc)
@@ -97,10 +98,8 @@ class myTk():
             for entry in column:             
                 if isinstance(entry, str):
                     menubar.add_cascade(label=entry, menu=menu)
-                    print(entry)
                 else:
                     menu.add_command(label=entry[0], command=entry[1])
-                    print(entry[0], entry[1])
         self.root.config(menu=menubar)
 
     def frame(self, option):
@@ -269,13 +268,11 @@ class myTk():
         self.rotbox[id].config(state='normal')
         #index 'linenbr.linepos'
         self.rotbox[id].insert(index, line)
-        self.rotbox[id].update()
         self.rotbox[id].config(state='disabled')
 
     def clearrotext(self, id, index, line):
         self.rotbox[id].config(state='normal')
         self.rotbox[id].delete('0.0', 'end')
-        self.rotbox[id].update()
         self.rotbox[id].config(state='disabled')
 
     def getrotextselection(self, id):
@@ -292,19 +289,15 @@ class myTk():
         self.root.config(cursor=curs)
         if self.entry != {}:
             for id in self.entry:
-                print(id)
                 self.entry[id]['obj'].config(cursor=curs)
         if self.lbox != {}:
             for id in self.lbox:
-                print(id)
                 self.lbox[id].config(cursor=curs)
         if self.tbox != {}:
             for id in self.tbox:
-                print(id)
                 self.tbox[id].config(cursor=curs)
         if self.rotbox != {}:
             for id in self.rotbox:
-                print(id)
                 self.rotbox[id].config(cursor=curs)
 
     def About(self):
@@ -316,7 +309,7 @@ class myTk():
 ==========================================================================
 '''
 if __name__ == "__main__":
-    tests = ('textentry', '2nd_textentry', 'textbox', 'label')
+    tests = ('textentry', 'rotextbox')
     selection = ''
 
     def about():
