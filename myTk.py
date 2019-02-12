@@ -285,6 +285,28 @@ class myTk():
         self.btn[desc] = Button(text=desc, background=color, command=func)
         self.btn[desc].pack(side='left')
 
+    def setcursor(self, curs):
+        if curs != 'watch':
+            curs = 'top_left_arrow'
+
+        self.root.config(cursor=curs)
+        if self.entry != {}:
+            for key in self.entry:
+                print(key)
+                self.entry['input_1'].config(cursor=curs)
+        if self.lbox != {}:
+            for key in self.lbox:
+                print(key)
+                #self.lbox[key].config(cursor=curs)
+        if self.tbox != {}:
+            for key in self.tbox:
+                print(key)
+                #self.tbox[key].config(cursor=curs)
+        if self.rotbox != {}:
+            for key in self.rotbox:
+                print(key)
+                #self.rotbox[key].config(cursor=curs)
+
     def About(self):
         print("Python3 tkinker sample program.")
 
@@ -294,7 +316,7 @@ class myTk():
 ==========================================================================
 '''
 if __name__ == "__main__":
-    tests = ('textentry', 'rotextbox', 'label')
+    tests = ('textentry', '2nd_textentry', 'textbox', 'label')
     selection = ''
 
     def about():
@@ -344,6 +366,12 @@ if __name__ == "__main__":
         print("get word")
         print(app.getcheckbutton('word'))
 
+    def get_cursor():
+        if app.getcheckbutton('cursor'):
+            app.setcursor('watch')
+        else:
+            app.setcursor('top_left_arrow')
+
     app = myTk()
     Win = app.win('Tkinter Template', '640x480')
 
@@ -379,6 +407,11 @@ if __name__ == "__main__":
         app.focusentry('input_1')
         app.checkbutton('case', 'Case', get_case) 
         app.checkbutton('word', 'Word', get_word)
+
+    if '2nd_textentry' in tests:
+        app.frame('fill')
+        app.textentry('input_2', 'User In2', 45)
+        app.checkbutton('cursor', 'Cursor', get_cursor)
 
     if 'listbox' in tests: 
         app.frame('expand')
