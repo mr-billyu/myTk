@@ -291,21 +291,21 @@ class myTk():
 
         self.root.config(cursor=curs)
         if self.entry != {}:
-            for key in self.entry:
-                print(key)
-                self.entry['input_1'].config(cursor=curs)
+            for id in self.entry:
+                print(id)
+                self.entry[id]['obj'].config(cursor=curs)
         if self.lbox != {}:
-            for key in self.lbox:
-                print(key)
-                #self.lbox[key].config(cursor=curs)
+            for id in self.lbox:
+                print(id)
+                self.lbox[id].config(cursor=curs)
         if self.tbox != {}:
-            for key in self.tbox:
-                print(key)
-                #self.tbox[key].config(cursor=curs)
+            for id in self.tbox:
+                print(id)
+                self.tbox[id].config(cursor=curs)
         if self.rotbox != {}:
-            for key in self.rotbox:
-                print(key)
-                #self.rotbox[key].config(cursor=curs)
+            for id in self.rotbox:
+                print(id)
+                self.rotbox[id].config(cursor=curs)
 
     def About(self):
         print("Python3 tkinker sample program.")
@@ -373,7 +373,7 @@ if __name__ == "__main__":
             app.setcursor('top_left_arrow')
 
     app = myTk()
-    Win = app.win('Tkinter Template', '640x480')
+    Win = app.win('myTk Tests', '640x480')
 
     app.frame('fill')
     if 'textbox' in tests:
