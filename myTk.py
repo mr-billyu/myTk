@@ -12,6 +12,7 @@ class myTk():
         widget = obj.win('title', 'geometry')
         widget = obj.button('desc', 'color', 'command')
         widget = obj.checkbutton('id', 'desc', 'command')
+        widget = obj.combobox('id', 'label', values[])
         widget = obj.frame(<'fill'|'expand'|''>)
         widget = obj.label('l|c|r', 'text')
         widget = obj.list('id')
@@ -84,6 +85,7 @@ class myTk():
         self.rotbox = {}
         self.ckbutton = {}
         self.btn = {}
+        self.cbox = {}
 
     def win(self, title, geometry):
         self.root = Tk()
@@ -299,6 +301,20 @@ class myTk():
         if self.rotbox != {}:
             for id in self.rotbox:
                 self.rotbox[id].config(cursor=curs)
+
+    def combobox(self, id, values):
+        self.label('l', 'combobox')
+        self.cbox[id] = {}
+        self.cbox[id]['value'] = StringVar()
+        self.cbox[id]['obj'] = ttk.Combobox(self.frm,
+                                    textvariable=self.cbox[id]['value'])
+        self.cbox[id]['obj'].pack(side=LEFT, fill=X)
+
+    def getcboxentry(self, id):
+        return(self.cbox[id]['value'].get())
+
+    def bindcboxentry(self, id, key, callbackfunc):
+        self.cbox[id]['obj'].bind(key, callbackfunc)
 
     def About(self):
         print("Python3 tkinker sample program.")
