@@ -49,6 +49,7 @@ class myTk():
         obj.clearlist('id')
         obj.clearrotext('id')
         obj.cleartext('id')
+        obj.setcombobox('id', 'value')
         obj.setlist('id', 'line')
         obj.setlistsel('id', 'linenbr')
         obj.setlistpos('id', 'linenbr')
