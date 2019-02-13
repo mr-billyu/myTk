@@ -43,6 +43,7 @@ class myTk():
         []        = obj.gettextall('id')
         value     = obj.gettextindex('id')
         value     = obj.gettextselection('id')
+        value     = obj.getcombobox('id')
 
     Set/Clear Data Methods:
         obj.clearlist('id')
@@ -64,6 +65,7 @@ class myTk():
         obj.bindlist('id', '<key>', callbackfunc)
         obj.bindrotext('id' '<key>', callbackfunc)
         obj.bindtext('id', '<key>', callbackfunc)
+        obj.bindcombobox('id', '<key>', callbackfunc)
 
     User Configurable buttons:
 
@@ -302,18 +304,21 @@ class myTk():
             for id in self.rotbox:
                 self.rotbox[id].config(cursor=curs)
 
-    def combobox(self, id, values):
-        self.label('l', 'combobox')
+    def combobox(self, id, label, values):
+        self.label('l', label)
         self.cbox[id] = {}
         self.cbox[id]['value'] = StringVar()
-        self.cbox[id]['obj'] = ttk.Combobox(self.frm,
+        self.cbox[id]['obj'] = ttk.Combobox(self.frm, values=values,
                                     textvariable=self.cbox[id]['value'])
         self.cbox[id]['obj'].pack(side=LEFT, fill=X)
 
-    def getcboxentry(self, id):
+    def setcombobox(self, id, default):
+        self.cbox[id]['value'].set(default)
+
+    def getcombobox(self, id):
         return(self.cbox[id]['value'].get())
 
-    def bindcboxentry(self, id, key, callbackfunc):
+    def bindcombobox(self, id, key, callbackfunc):
         self.cbox[id]['obj'].bind(key, callbackfunc)
 
     def About(self):
@@ -325,7 +330,7 @@ class myTk():
 ==========================================================================
 '''
 if __name__ == "__main__":
-    tests = ('textentry', 'rotextbox')
+    tests = ('combobox', 'rotextbox')
     selection = ''
 
     def about():
@@ -381,6 +386,9 @@ if __name__ == "__main__":
         else:
             app.setcursor('top_left_arrow')
 
+    def get_combobox(arg):
+        print(app.getcombobox('combo'))
+
     app = myTk()
     Win = app.win('myTk Tests', '640x480')
 
@@ -421,6 +429,12 @@ if __name__ == "__main__":
         app.frame('fill')
         app.textentry('input_2', 'User In2', 45)
         app.checkbutton('cursor', 'Cursor', get_cursor)
+
+    if 'combobox' in tests:
+        app.frame('fill')
+        app.combobox('combo', 'combobox', ('a', 'b', 'cdefghijk'))
+        app.setcombobox('combo', 'default')
+        app.bindcombobox('combo', '<Return>', get_combobox)
 
     if 'listbox' in tests: 
         app.frame('expand')
