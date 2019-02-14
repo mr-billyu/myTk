@@ -31,9 +31,9 @@ class myTk():
 
         widget = obj.textbox('id')
         widget = obj.rotext('id')
-        widget = obj.radiobutton('id', "desc", ((label0, func0),
-                                                (label1, func1),
-                                                (label2, func2))
+        widget = obj.radiobutton('id', "desc", ((label0, 'val1'),
+                                                (label1, 'val2'),
+                                                (label2, 'val3'))
         widget = obj.textentry('id', 'prompt', size)
 
     Get Data Methods:
@@ -328,15 +328,22 @@ class myTk():
     def bindcombobox(self, id, key, callbackfunc):
         self.cbox[id]['obj'].bind(key, callbackfunc)
 
-    def radiobutton(self, desc, id, buttondata):
+    def radiobutton(self, id, desc, buttondata):
         self.label('l', desc)
         self.radiobtn[id] = {}
         self.radiobtn[id]['value'] = StringVar()
         for text, value in buttondata:
-            self.radiobtn[id][text] = Radiobutton(self.frm, text=text, 
+            self.radiobtn[id]['obj'] = Radiobutton(self.frm, text=text, 
                                        value=value,
                                        variable=self.radiobtn[id]['value'])
-            self.radiobtn[id][text].pack(side=LEFT, fill=X)
+            self.radiobtn[id]['obj'].pack(side=LEFT, fill=X)
+
+    def getradiobutton(self, id):
+        return(self.radiobtn[id]['value'].get())
+
+    def setradiobutton(self, id, val):
+        self.radiobtn[id]['value'].set(val)
+
 
 '''
 ==========================================================================
@@ -344,7 +351,7 @@ class myTk():
 ==========================================================================
 '''
 if __name__ == "__main__":
-    tests = ('combobox', 'rotextbox', 'textentry', 'radiobutton')
+    tests = ('combobox', 'rotextbox', 'textentry', 'radiobutton', 'button')
     selection = ''
 
     def about():
@@ -403,6 +410,9 @@ if __name__ == "__main__":
     def get_combobox(arg):
         print(app.getcombobox('combo'))
 
+    def get_radiobutton():
+        print(app.getradiobutton('test'))
+
     app = myTk()
     Win = app.win('myTk Tests', '640x480')
 
@@ -451,6 +461,7 @@ if __name__ == "__main__":
                  ('color separate', '4')]
         app.frame('fill')
         app.radiobutton('test', 'label', modes)
+        app.setradiobutton('test', '2')
 
     if 'combobox' in tests:
         app.frame('fill')
@@ -489,6 +500,7 @@ if __name__ == "__main__":
         app.button('copy', 'white', get_selected_text)
         app.button('paste', 'LightSteelBlue', paste)
         app.button('clear', 'DodgerBlue', clear_textbox)
+        app.button('radiobutton', 'white', get_radiobutton)
 
     app.root.mainloop()
 
