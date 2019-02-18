@@ -8,6 +8,9 @@ class myTk():
     Create Window Object:
         self = myTk()
 
+    Quit Window Object:
+        obj.quit()
+
     Create Widgets Methods:
         obj.win('title', 'geometry')
         obj.button('desc', 'color', 'command')
@@ -343,6 +346,9 @@ class myTk():
     def setradiobutton(self, id, val):
         self.radiobtn[id]['value'].set(val)
 
+    def quit(self):
+        self.root.quit()
+
 
 '''
 ==========================================================================
@@ -417,7 +423,7 @@ if __name__ == "__main__":
 
     app.frame('fill')
     if 'textbox' in tests:
-        menudata = (("File", ("Quit", app.root.quit)), 
+        menudata = (("File", ("Quit", app.quit)), 
 
                     ("Edit", ("Copy", get_selected_text), 
                              ("Paste", paste),
@@ -426,7 +432,7 @@ if __name__ == "__main__":
                     ("Help", ("About", about))
                    )   
     else:
-        menudata = (("File", ("Quit", app.root.quit)),
+        menudata = (("File", ("Quit", app.quit)),
 
                     ("Help", ("About", about))
                    )
