@@ -9,15 +9,15 @@ class myTk():
         self = myTk()
 
     Create Widgets Methods:
-        widget = obj.win('title', 'geometry')
-        widget = obj.button('desc', 'color', 'command')
-        widget = obj.checkbutton('id', 'desc', 'command')
-        widget = obj.combobox('id', 'label', values[])
-        widget = obj.frame(<'fill'|'expand'|''>)
-        widget = obj.label('l|c|r', 'text')
-        widget = obj.list('id')
-        widget = obj.multilist('id')
-        widget = obj.menubar(menudata)
+        obj.win('title', 'geometry')
+        obj.button('desc', 'color', 'command')
+        obj.checkbutton('id', 'desc', 'command')
+        obj.combobox('id', 'label', values[])
+        obj.frame(<'fill'|'expand'|''>)
+        obj.label('l|c|r', 'text')
+        obj.list('id')
+        obj.multilist('id')
+        obj.menubar(menudata)
             where:  menudata = (("File", ("New", create_file), 
                                          ("Save", save_file),
                                          ("Quit", root.quit)),
@@ -29,12 +29,12 @@ class myTk():
                                 ("Help", ("About", about))
                                )
 
-        widget = obj.textbox('id')
-        widget = obj.rotext('id')
-        widget = obj.radiobutton('id', "desc", ((label0, 'val1'),
+        obj.textbox('id')
+        obj.rotext('id')
+        obj.radiobutton('id', "desc", ((label0, 'val1'),
                                                 (label1, 'val2'),
                                                 (label2, 'val3'))
-        widget = obj.textentry('id', 'prompt', size)
+        obj.textentry('id', 'prompt', size)
 
     Get Data Methods:
         value     = obj.getentry('id')
@@ -100,7 +100,6 @@ class myTk():
         self.root = Tk()
         self.root.title(title)
         self.root.geometry(geometry)
-        return(self.root)
 
     def menubar(self, menudata):
         menubar = Menu(self.frm)
@@ -414,11 +413,11 @@ if __name__ == "__main__":
         print(app.getradiobutton('test'))
 
     app = myTk()
-    Win = app.win('myTk Tests', '640x480')
+    app.win('myTk Tests', '640x480')
 
     app.frame('fill')
     if 'textbox' in tests:
-        menudata = (("File", ("Quit", Win.quit)), 
+        menudata = (("File", ("Quit", app.root.quit)), 
 
                     ("Edit", ("Copy", get_selected_text), 
                              ("Paste", paste),
@@ -427,7 +426,7 @@ if __name__ == "__main__":
                     ("Help", ("About", about))
                    )   
     else:
-        menudata = (("File", ("Quit", Win.quit)),
+        menudata = (("File", ("Quit", app.root.quit)),
 
                     ("Help", ("About", about))
                    )
