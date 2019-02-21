@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 #
-# Process Configurable Button data.
+# Parse Configurable Button data.
 #
 import re
 
