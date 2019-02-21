@@ -1,9 +1,43 @@
 #!/usr/bin/env python3
 
-for s in ('(txt)', '(txt|)', '(txt|py)', '(txt|py|)'):
-    print(s + ': ' + s.replace('|)', ')'))
+#
+# Parse Configurable Button data.
+#
+import re
+
+data = ['  edit    : LightSteelBlue:  /home/data/scripts/e2 %filename',
+        '  te      : Light SkyBlue :  te %filename                   ',
+        '  prt     : DeepSkyBlue   :  prt %filename                  ',
+        '  rm      : tomato        :  rm %filetype %filename         ',
+        '  sh      : gold          :  sh                             ',
+        '  notes   : burlywood     :  notes                          ',
+        '  lock    : chocolate     :  lock                           ']
+
+for rcd in data:
+    print(rcd)
+    x = re.sub('^\s*', '', rcd)
+    x1 = re.sub('\s*$', '', x)
+    x2 = re.sub('\s*:\s*', ':', x1)
+    print(x2)
+    (desc, color, action) = x2.split(':')
+    print(desc)
+    print(color)
+    print(action)
+    print(' ')
+
 
 '''
+#
+# Replace '|' with ','
+#
+for s in ('(txt)', '(txt|)', '(txt|py)', '(txt|py|)'):
+    print(s + ': ' + s.replace('|)', ')'))
+'''
+
+'''
+#
+# argparse
+#
 import argparse
 parser = argparse.ArgumentParser(description='GUI program that searches' +
                                              ' all *.txt files in a' +
@@ -21,6 +55,9 @@ for file in filetype.split(','):
 '''
 
 '''
+#
+# Use regular expression to separate line into parts.
+#
 import re
 line = "/home/pi/ssh/BillyU_data/Bill/Documents/raspberrypi/test.txt:abcd"
 m = re.match(r'(^\S*/)(\S*.txt:.*)', line)
@@ -31,11 +68,17 @@ print(m.group(2))
 '''
 
 '''
+#
+# Open a new shell and start less program.
+#
 import os
 os.system('lxterminal -e less Win.pm')
 '''
 
 '''
+#
+# Remove '\n' from end of line
+#
 import os
 results = os.popen("grep list *.py") 
 for line in results:
@@ -43,6 +86,9 @@ for line in results:
 '''
 
 '''
+#
+# Simple program using scrollbar.
+#
 from tkinter import *
 from tkinter import ttk
 root = Tk()
@@ -60,6 +106,9 @@ mainloop()
 '''
 
 '''
+#
+# Setting and clearing textvariable
+#
 from tkinter import *
 from tkinter import ttk
 def cb(evnt):
@@ -76,6 +125,9 @@ win.mainloop()
 '''
 
 '''
+#
+# Get input from entry window.
+#
 from tkinter import *
 from tkinter import ttk
 def cb(evnt):
@@ -90,6 +142,9 @@ win.mainloop()
 '''
 
 '''
+#
+# Menu example
+#
 menudata = (("File", ("Quit", "root.quit"), ("Exit", "root.quit")),
             ("Help", ("About", "about"))
            )
