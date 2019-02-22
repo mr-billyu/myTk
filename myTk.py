@@ -8,15 +8,19 @@ class myTk():
     Create Window Object:
         self = myTk()
 
+    Quit Window Object:
+        obj.quit()
+
     Create Widgets Methods:
-        widget = obj.win('title', 'geometry')
-        widget = obj.button('desc', 'color', 'command')
-        widget = obj.checkbutton('id', 'desc', 'command')
-        widget = obj.frame(<'fill'|'expand'|''>)
-        widget = obj.label('l|c|r', 'text')
-        widget = obj.list('id')
-        widget = obj.multilist('id')
-        widget = obj.menubar(menudata)
+        obj.win('title', 'geometry')
+        obj.button('desc', 'color', 'command')
+        obj.checkbutton('id', 'desc', 'command')
+        obj.combobox('id', 'label', values[])
+        obj.frame(<'fill'|'expand'|''>)
+        obj.label('l|c|r', 'text')
+        obj.list('id')
+        obj.multilist('id')
+        obj.menubar(menudata)
             where:  menudata = (("File", ("New", create_file), 
                                          ("Save", save_file),
                                          ("Quit", root.quit)),
@@ -28,8 +32,12 @@ class myTk():
                                 ("Help", ("About", about))
                                )
 
-        widget = obj.textbox('id')
-        widget = obj.textentry('id', 'prompt', size)
+        obj.textbox('id')
+        obj.rotext('id')
+        obj.radiobutton('id', "desc", ((label0, 'val1'),
+                                                (label1, 'val2'),
+                                                (label2, 'val3'))
+        obj.textentry('id', 'prompt', size)
 
     Get Data Methods:
         value     = obj.getentry('id')
@@ -41,21 +49,32 @@ class myTk():
         []        = obj.gettextall('id')
         value     = obj.gettextindex('id')
         value     = obj.gettextselection('id')
+        value     = obj.getcombobox('id')
+        selection = obj.getradiobutton('id')
 
     Set/Clear Data Methods:
         obj.clearlist('id')
+        obj.clearrotext('id')
+        obj.cleartext('id')
+        obj.setcombobox('id', 'value')
         obj.setlist('id', 'line')
         obj.setlistsel('id', 'linenbr')
         obj.setlistpos('id', 'linenbr')
         obj.setlisttop('id', 'linenbr')
         obj.setentry('id', value)
         obj.setcheckbutton('id', value)
-        obj.cleartext('id')
+        obj.setrotext('id', 'index', 'line')
         obj.inserttext('id', 'index', 'line')
         obj.settextpos('id', 'index')
+        obj.setcursor('watch'|'normal')
+        obj.setradiobutton('id', 'value')
 
     Action Methods:
         obj.bindentry('id', '<key>', callbackfunc)
+        obj.bindlist('id', '<key>', callbackfunc)
+        obj.bindrotext('id' '<key>', callbackfunc)
+        obj.bindtext('id', '<key>', callbackfunc)
+        obj.bindcombobox('id', '<key>', callbackfunc)
 
     User Configurable buttons:
 
@@ -74,14 +93,16 @@ class myTk():
         self.entry = {} 
         self.lbox = {}
         self.tbox = {}
+        self.rotbox = {}
         self.ckbutton = {}
         self.btn = {}
+        self.cbox = {}
+        self.radiobtn = {}
 
     def win(self, title, geometry):
         self.root = Tk()
         self.root.title(title)
         self.root.geometry(geometry)
-        return(self.root)
 
     def menubar(self, menudata):
         menubar = Menu(self.frm)
@@ -113,7 +134,7 @@ class myTk():
         ttk.Label(self.frm, text=text).pack(side=position)
 
     def textentry(self, id, prompt, width):
-        self.label('l', 'User Input')
+        self.label('l', prompt)
         self.entry[id] = {} 
         self.entry[id]['value'] = StringVar() 
         self.entry[id]['obj'] = Entry(self.frm, width=width,
@@ -197,7 +218,6 @@ class myTk():
 
     def setcheckbutton(self, id, value):
         self.ckbutton[id]['value'].set(value)
-        
 
     def textbox(self, id):
         vsb = Scrollbar(self.frm, orient=VERTICAL)
@@ -238,12 +258,97 @@ class myTk():
         #index 'linenbr.linepos'
         self.tbox[id].see(index)
 
+    def rotextbox(self, id):
+        vsb = Scrollbar(self.frm, orient=VERTICAL)
+        vsb.pack(side=RIGHT, fill=Y)
+
+        hsb = Scrollbar(self.frm, orient=HORIZONTAL)
+        hsb.pack(side=BOTTOM, fill=X)
+
+        self.rotbox[id] = Text(self.frm, bg="white", fg="black",
+                               yscrollcommand=vsb.set,
+                               xscrollcommand=hsb.set,
+                               state='disabled')
+        self.rotbox[id].pack(side=LEFT, expand=1, fill=BOTH)
+
+        vsb.config(command=self.rotbox[id].yview)
+        hsb.config(command=self.rotbox[id].xview)
+
+    def bindrotext(self, id, key, callbackfunc):
+        self.rotbox[id].bind(key, callbackfunc)
+ 
+    def insertrotext(self, id, index, line):
+        self.rotbox[id].config(state='normal')
+        #index 'linenbr.linepos'
+        self.rotbox[id].insert(index, line)
+        self.rotbox[id].config(state='disabled')
+
+    def clearrotext(self, id, index, line):
+        self.rotbox[id].config(state='normal')
+        self.rotbox[id].delete('0.0', 'end')
+        self.rotbox[id].config(state='disabled')
+
+    def getrotextselection(self, id):
+        return(self.rotbox[id].selection_get())
+
     def button(self, desc, color, func):
         self.btn[desc] = Button(text=desc, background=color, command=func)
         self.btn[desc].pack(side='left')
 
-    def About(self):
-        print("Python3 tkinker sample program.")
+    def setcursor(self, curs):
+        if curs != 'watch':
+            curs = 'top_left_arrow'
+
+        self.root.config(cursor=curs)
+        if self.entry != {}:
+            for id in self.entry:
+                self.entry[id]['obj'].config(cursor=curs)
+        if self.lbox != {}:
+            for id in self.lbox:
+                self.lbox[id].config(cursor=curs)
+        if self.tbox != {}:
+            for id in self.tbox:
+                self.tbox[id].config(cursor=curs)
+        if self.rotbox != {}:
+            for id in self.rotbox:
+                self.rotbox[id].config(cursor=curs)
+
+    def combobox(self, id, label, values):
+        self.label('l', label)
+        self.cbox[id] = {}
+        self.cbox[id]['value'] = StringVar()
+        self.cbox[id]['obj'] = ttk.Combobox(self.frm, values=values,
+                                    textvariable=self.cbox[id]['value'])
+        self.cbox[id]['obj'].pack(side=LEFT, fill=X)
+
+    def setcombobox(self, id, default):
+        self.cbox[id]['value'].set(default)
+
+    def getcombobox(self, id):
+        return(self.cbox[id]['value'].get())
+
+    def bindcombobox(self, id, key, callbackfunc):
+        self.cbox[id]['obj'].bind(key, callbackfunc)
+
+    def radiobutton(self, id, desc, buttondata):
+        self.label('l', desc)
+        self.radiobtn[id] = {}
+        self.radiobtn[id]['value'] = StringVar()
+        for text, value in buttondata:
+            self.radiobtn[id]['obj'] = Radiobutton(self.frm, text=text, 
+                                       value=value,
+                                       variable=self.radiobtn[id]['value'])
+            self.radiobtn[id]['obj'].pack(side=LEFT, fill=X)
+
+    def getradiobutton(self, id):
+        return(self.radiobtn[id]['value'].get())
+
+    def setradiobutton(self, id, val):
+        self.radiobtn[id]['value'].set(val)
+
+    def quit(self):
+        self.root.quit()
+
 
 '''
 ==========================================================================
@@ -251,7 +356,7 @@ class myTk():
 ==========================================================================
 '''
 if __name__ == "__main__":
-    tests = ('textentry', 'textbox', 'button', 'label')
+    tests = ('combobox', 'rotextbox', 'textentry', 'radiobutton', 'button')
     selection = ''
 
     def about():
@@ -284,6 +389,11 @@ if __name__ == "__main__":
     def set_textbox_pos(arg):
         app.inserttext('display', '1.10', 'abcdefg')
 
+    def get_selected_rotext(arg):
+        global selection
+        selection = app.getrotextselection('display')
+        print(selection)
+
     def insert_button():
         print('test button pressed')
         paste()
@@ -296,12 +406,24 @@ if __name__ == "__main__":
         print("get word")
         print(app.getcheckbutton('word'))
 
+    def get_cursor():
+        if app.getcheckbutton('cursor'):
+            app.setcursor('watch')
+        else:
+            app.setcursor('top_left_arrow')
+
+    def get_combobox(arg):
+        print(app.getcombobox('combo'))
+
+    def get_radiobutton():
+        print(app.getradiobutton('test'))
+
     app = myTk()
-    Win = app.win('Tkinter Template', '640x480')
+    app.win('myTk Tests', '640x480')
 
     app.frame('fill')
     if 'textbox' in tests:
-        menudata = (("File", ("Quit", Win.quit)), 
+        menudata = (("File", ("Quit", app.quit)), 
 
                     ("Edit", ("Copy", get_selected_text), 
                              ("Paste", paste),
@@ -310,7 +432,7 @@ if __name__ == "__main__":
                     ("Help", ("About", about))
                    )   
     else:
-        menudata = (("File", ("Quit", Win.quit)),
+        menudata = (("File", ("Quit", app.quit)),
 
                     ("Help", ("About", about))
                    )
@@ -332,6 +454,26 @@ if __name__ == "__main__":
         app.checkbutton('case', 'Case', get_case) 
         app.checkbutton('word', 'Word', get_word)
 
+    if '2nd_textentry' in tests:
+        app.frame('fill')
+        app.textentry('input_2', 'User In2', 45)
+        app.checkbutton('cursor', 'Cursor', get_cursor)
+
+    if 'radiobutton' in tests:
+        modes = [('Monochrome', '1'),
+                 ('Grayscale', '2'),
+                 ('true color', '3'),
+                 ('color separate', '4')]
+        app.frame('fill')
+        app.radiobutton('test', 'label', modes)
+        app.setradiobutton('test', '2')
+
+    if 'combobox' in tests:
+        app.frame('fill')
+        app.combobox('combo', 'combobox', ('a', 'b', 'cdefghijk'))
+        app.setcombobox('combo', 'default')
+        app.bindcombobox('combo', '<Return>', get_combobox)
+
     if 'listbox' in tests: 
         app.frame('expand')
         app.listbox('results')
@@ -349,13 +491,21 @@ if __name__ == "__main__":
         for i in range(200):
             app.inserttext('display', str(i) + '.0', 
                             "this is a test of textbox" + str(i) + "\n")
-        print(app.gettextall('display'))
+
+    if 'rotextbox' in tests:
+        app.frame('expand')
+        app.rotextbox('display')
+        app.bindrotext('display', '<Button-2>', get_selected_rotext)
+        for i in range(200):
+            app.insertrotext('display', str(i) + '.0', 
+                              "this is a test of rotextbox" + str(i) + "\n")
 
     if 'button' in tests:
         app.frame('fill')
         app.button('copy', 'white', get_selected_text)
         app.button('paste', 'LightSteelBlue', paste)
         app.button('clear', 'DodgerBlue', clear_textbox)
+        app.button('radiobutton', 'white', get_radiobutton)
 
     app.root.mainloop()
 
