@@ -33,7 +33,7 @@ class myTk():
                                )
 
         obj.textbox('id')
-        obj.rotext('id')
+        obj.rotextbox('id')
         obj.radiobutton('id', "desc", ((label0, 'val1'),
                                                 (label1, 'val2'),
                                                 (label2, 'val3'))
@@ -46,16 +46,16 @@ class myTk():
         []        = obj.getallsellistline('id')
         top       = obj.getlisttop('id')
         value     = obj.getcheckbutton('id')
-        []        = obj.gettextall('id')
-        value     = obj.gettextindex('id')
-        value     = obj.gettextselection('id')
+        []        = obj.gettextboxall('id')
+        value     = obj.gettextboxindex('id')
+        value     = obj.gettextboxselection('id')
         value     = obj.getcombobox('id')
         selection = obj.getradiobutton('id')
 
     Set/Clear Data Methods:
         obj.clearlist('id')
-        obj.clearrotext('id')
-        obj.cleartext('id')
+        obj.clearrotextbox('id')
+        obj.cleartextbox('id')
         obj.setcombobox('id', 'value')
         obj.setlist('id', 'line')
         obj.setlistsel('id', 'linenbr')
@@ -63,17 +63,17 @@ class myTk():
         obj.setlisttop('id', 'linenbr')
         obj.setentry('id', value)
         obj.setcheckbutton('id', value)
-        obj.setrotext('id', 'index', 'line')
-        obj.inserttext('id', 'index', 'line')
-        obj.settextpos('id', 'index')
+        obj.insertrotextbox('id', 'index', 'line')
+        obj.inserttextbox('id', 'index', 'line')
+        obj.settextboxpos('id', 'index')
         obj.setcursor('watch'|'normal')
         obj.setradiobutton('id', 'value')
 
     Action Methods:
         obj.bindentry('id', '<key>', callbackfunc)
         obj.bindlist('id', '<key>', callbackfunc)
-        obj.bindrotext('id' '<key>', callbackfunc)
-        obj.bindtext('id', '<key>', callbackfunc)
+        obj.bindrotextbox('id' '<key>', callbackfunc)
+        obj.bindtextbox('id', '<key>', callbackfunc)
         obj.bindcombobox('id', '<key>', callbackfunc)
 
     User Configurable buttons:
@@ -234,27 +234,31 @@ class myTk():
         vsb.config(command=self.tbox[id].yview)
         hsb.config(command=self.tbox[id].xview)
 
-    def bindtext(self, id, key, callbackfunc):
+    def bindtextbox(self, id, key, callbackfunc):
         self.tbox[id].bind(key, callbackfunc)
 
-    def gettextall(self, id):
+    def gettextboxall(self, id):
         return(self.tbox[id].get('1.0', 'end'))
 
-    def gettextindex(self, id):
+    def gettextboxindex(self, id):
         #Returns linenbr.lineposition.
         return(self.tbox[id].index('insert'))
 
-    def gettextselection(self, id):
-        return(self.tbox[id].selection_get())
+    def gettextboxselection(self, id):
+        try:
+            sel = self.tbox[id].selection_get()
+        except:
+            sel = ''
+        return(sel)
 
-    def cleartext(self, id):
+    def cleartextbox(self, id):
         self.tbox[id].delete('0.0', 'end')
 
-    def inserttext(self, id, index, line):
+    def inserttextbox(self, id, index, line):
         #index 'linenbr.linepos'
         self.tbox[id].insert(index, line)
 
-    def settextpos(self, id, index):
+    def settextboxpos(self, id, index):
         #index 'linenbr.linepos'
         self.tbox[id].see(index)
 
@@ -274,22 +278,26 @@ class myTk():
         vsb.config(command=self.rotbox[id].yview)
         hsb.config(command=self.rotbox[id].xview)
 
-    def bindrotext(self, id, key, callbackfunc):
+    def bindrotextbox(self, id, key, callbackfunc):
         self.rotbox[id].bind(key, callbackfunc)
  
-    def insertrotext(self, id, index, line):
+    def insertrotextbox(self, id, index, line):
         self.rotbox[id].config(state='normal')
         #index 'linenbr.linepos'
         self.rotbox[id].insert(index, line)
         self.rotbox[id].config(state='disabled')
 
-    def clearrotext(self, id, index, line):
+    def clearrotextbox(self, id, index, line):
         self.rotbox[id].config(state='normal')
         self.rotbox[id].delete('0.0', 'end')
         self.rotbox[id].config(state='disabled')
 
-    def getrotextselection(self, id):
-        return(self.rotbox[id].selection_get())
+    def getrotextboxselection(self, id):
+        try:
+            sel = self.rotbox[id].selection_get()
+        except:
+            sel = ''
+        return(sel)
 
     def button(self, desc, color, func):
         self.btn[desc] = Button(text=desc, background=color, command=func)
@@ -356,7 +364,7 @@ class myTk():
 ==========================================================================
 '''
 if __name__ == "__main__":
-    tests = ('combobox', 'rotextbox', 'textentry', 'radiobutton', 'button')
+    tests = ('combobox', 'textbox', 'rotextbox', 'textentry', 'radiobutton', 'button')
     selection = ''
 
     def about():
@@ -369,34 +377,30 @@ if __name__ == "__main__":
     def get_selected_line(arg):
         print(app.getlistselection('results'))
 
-    def get_selected_text():
-        global selection
-        selection = app.gettextselection('display')
+    def get_selected_rotext(arg):
+        print(app.getrotextboxselection('rodisplay'))
 
     def get_textbox_index(arg):
-        print(app.gettextindex('display'))
+        print(app.gettextboxindex('display'))
 
-    def clear_textbox():
-        app.cleartext('display')
+    def copy():
+        global selection
+        selection = app.gettextboxselection('display')
 
-    def set_textbox(arg):
-        app.inserttext('display', '0.0', '0123456789012345678901234567890')
+    def clear():
+        app.cleartextbox('display')
 
     def paste():
-        index = app.gettextindex('display')
-        app.inserttext('display', index, selection)
+        index = app.gettextboxindex('display')
+        app.inserttextbox('display', index, selection)
 
-    def set_textbox_pos(arg):
-        app.inserttext('display', '1.10', 'abcdefg')
+    def set_textbox():
+        app.inserttextbox('display', '0.0', '0123456789012345678934567890')
 
-    def get_selected_rotext(arg):
+    def get_selected_text(arg):
         global selection
-        selection = app.getrotextselection('display')
+        selection = app.gettextboxselection('display')
         print(selection)
-
-    def insert_button():
-        print('test button pressed')
-        paste()
 
     def get_case():
         print("get case")
@@ -425,9 +429,9 @@ if __name__ == "__main__":
     if 'textbox' in tests:
         menudata = (("File", ("Quit", app.quit)), 
 
-                    ("Edit", ("Copy", get_selected_text), 
+                    ("Edit", ("Copy", copy), 
                              ("Paste", paste),
-                             ("Clear", clear_textbox)),
+                             ("Clear", clear)),
 
                     ("Help", ("About", about))
                    )   
@@ -487,25 +491,28 @@ if __name__ == "__main__":
     if 'textbox' in tests:
         app.frame('expand')
         app.textbox('display')
-        app.bindtext('display', '<Button-2>', get_textbox_index)
+        app.bindtextbox('display', '<Button-2>', get_textbox_index)
         for i in range(200):
-            app.inserttext('display', str(i) + '.0', 
+            app.inserttextbox('display', str(i) + '.0', 
                             "this is a test of textbox" + str(i) + "\n")
 
     if 'rotextbox' in tests:
         app.frame('expand')
-        app.rotextbox('display')
-        app.bindrotext('display', '<Button-2>', get_selected_rotext)
+        app.rotextbox('rodisplay')
+        app.bindrotextbox('rodisplay', '<Button-2>', get_selected_rotext)
         for i in range(200):
-            app.insertrotext('display', str(i) + '.0', 
+            app.insertrotextbox('rodisplay', str(i) + '.0', 
                               "this is a test of rotextbox" + str(i) + "\n")
 
     if 'button' in tests:
         app.frame('fill')
-        app.button('copy', 'white', get_selected_text)
-        app.button('paste', 'LightSteelBlue', paste)
-        app.button('clear', 'DodgerBlue', clear_textbox)
-        app.button('radiobutton', 'white', get_radiobutton)
+        if 'textbox' in tests:
+            app.button('copy text', 'white', copy)
+            app.button('paste text', 'LightSteelBlue', paste)
+            app.button('clear text', 'DodgerBlue', clear)
+            app.button('load text', 'tomato', set_textbox)
+        if 'radiobutton' in tests:
+            app.button('radiobutton', 'white', get_radiobutton)
 
     app.root.mainloop()
 
