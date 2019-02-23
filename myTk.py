@@ -357,7 +357,7 @@ class myTk():
 ==========================================================================
 '''
 if __name__ == "__main__":
-    tests = ('combobox', 'rotextbox', 'textentry', 'radiobutton', 'button')
+    tests = ('combobox', 'textbox', 'rotextbox', 'textentry', 'radiobutton', 'button')
     selection = ''
 
     def about():
@@ -370,34 +370,30 @@ if __name__ == "__main__":
     def get_selected_line(arg):
         print(app.getlistselection('results'))
 
-    def get_selected_text():
-        global selection
-        selection = app.gettextboxselection('display')
+    def get_selected_rotext(arg):
+        print(app.getrotextboxselection('rodisplay'))
 
     def get_textbox_index(arg):
         print(app.gettextboxindex('display'))
 
-    def clear_textbox():
-        app.cleartextbox('display')
+    def copy():
+        global selection
+        selection = app.gettextboxselection('display')
 
-    def set_textbox(arg):
-        app.inserttextbox('display', '0.0', '0123456789012345678934567890')
+    def clear():
+        app.cleartextbox('display')
 
     def paste():
         index = app.gettextboxindex('display')
         app.inserttextbox('display', index, selection)
 
-    def set_textbox_pos(arg):
-        app.inserttextbox('display', '1.10', 'abcdefg')
+    def set_textbox():
+        app.inserttextbox('display', '0.0', '0123456789012345678934567890')
 
-    def get_selected_rotext(arg):
+    def get_selected_text(arg):
         global selection
-        selection = app.getrotextboxselection('display')
+        selection = app.gettextboxselection('display')
         print(selection)
-
-    def insert_button():
-        print('test button pressed')
-        paste()
 
     def get_case():
         print("get case")
@@ -426,9 +422,9 @@ if __name__ == "__main__":
     if 'textbox' in tests:
         menudata = (("File", ("Quit", app.quit)), 
 
-                    ("Edit", ("Copy", get_selected_text), 
+                    ("Edit", ("Copy", copy), 
                              ("Paste", paste),
-                             ("Clear", clear_textbox)),
+                             ("Clear", clear)),
 
                     ("Help", ("About", about))
                    )   
@@ -495,18 +491,21 @@ if __name__ == "__main__":
 
     if 'rotextbox' in tests:
         app.frame('expand')
-        app.rotextbox('display')
-        app.bindrotextbox('display', '<Button-2>', get_selected_rotext)
+        app.rotextbox('rodisplay')
+        app.bindrotextbox('rodisplay', '<Button-2>', get_selected_rotext)
         for i in range(200):
-            app.insertrotextbox('display', str(i) + '.0', 
+            app.insertrotextbox('rodisplay', str(i) + '.0', 
                               "this is a test of rotextbox" + str(i) + "\n")
 
     if 'button' in tests:
         app.frame('fill')
-        app.button('copy', 'white', get_selected_text)
-        app.button('paste', 'LightSteelBlue', paste)
-        app.button('clear', 'DodgerBlue', clear_textbox)
-        app.button('radiobutton', 'white', get_radiobutton)
+        if 'textbox' in tests:
+            app.button('copy text', 'white', copy)
+            app.button('paste text', 'LightSteelBlue', paste)
+            app.button('clear text', 'DodgerBlue', clear)
+            app.button('load text', 'tomato', set_textbox)
+        if 'radiobutton' in tests:
+            app.button('radiobutton', 'white', get_radiobutton)
 
     app.root.mainloop()
 
