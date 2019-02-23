@@ -245,8 +245,11 @@ class myTk():
         return(self.tbox[id].index('insert'))
 
     def gettextboxselection(self, id):
-        print(id)
-        return(self.tbox[id].selection_get())
+        try:
+            sel = self.tbox[id].selection_get()
+        except:
+            sel = ''
+        return(sel)
 
     def cleartextbox(self, id):
         self.tbox[id].delete('0.0', 'end')
@@ -290,7 +293,11 @@ class myTk():
         self.rotbox[id].config(state='disabled')
 
     def getrotextboxselection(self, id):
-        return(self.rotbox[id].selection_get())
+        try:
+            sel = self.rotbox[id].selection_get()
+        except:
+            sel = ''
+        return(sel)
 
     def button(self, desc, color, func):
         self.btn[desc] = Button(text=desc, background=color, command=func)
