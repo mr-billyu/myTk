@@ -12,14 +12,13 @@ class myTk():
         obj.quit()
 
     Create Widgets Methods:
-        obj.win('title', 'geometry')
-        obj.button('desc', 'color', 'command')
-        obj.checkbutton('id', 'desc', 'command')
-        obj.combobox('id', 'label', values[])
-        obj.frame(<'fill'|'expand'|''>)
-        obj.label('l|c|r', 'text')
-        obj.list('id')
-        obj.multilist('id')
+        widget = obj.win('title', 'geometry')
+        widget = obj.button('desc', 'color', 'command')
+        widget = obj.checkbutton('id', 'desc', 'command')
+        widget = obj.combobox('id', 'label', values[])
+        widget = obj.frame(<'fill'|'expand'|''>)
+        widget = obj.label('l|c|r', 'text')
+        widget = obj.list('id')
         obj.menubar(menudata)
             where:  menudata = (("File", ("New", create_file), 
                                          ("Save", save_file),
@@ -32,12 +31,12 @@ class myTk():
                                 ("Help", ("About", about))
                                )
 
-        obj.textbox('id')
-        obj.rotextbox('id')
-        obj.radiobutton('id', "desc", ((label0, 'val1'),
+        widget = obj.textbox('id')
+        widget = obj.rotextbox('id')
+        widget = obj.radiobutton('id', "desc", ((label0, 'val1'),
                                                 (label1, 'val2'),
                                                 (label2, 'val3'))
-        obj.textentry('id', 'prompt', size)
+        widget = obj.textentry('id', 'prompt', size)
 
     Get Data Methods:
         value     = obj.getentry('id')
@@ -103,6 +102,7 @@ class myTk():
         self.root = Tk()
         self.root.title(title)
         self.root.geometry(geometry)
+        return(self.root)
 
     def menubar(self, menudata):
         menubar = Menu(self.frm)
@@ -123,6 +123,7 @@ class myTk():
             self.frm.pack(side=TOP, fill=BOTH, expand=1)
         else:
             self.frm.pack(side=TOP)
+        return(self.frm)
 
     def label(self, position, text):
         if position == 'l':
@@ -131,7 +132,9 @@ class myTk():
             position = 'top'
         else:
             position = 'right'
-        ttk.Label(self.frm, text=text).pack(side=position)
+        obj = ttk.Label(self.frm, text=text)
+        obj.pack(side=position)
+        return(obj)
 
     def textentry(self, id, prompt, width):
         self.label('l', prompt)
@@ -141,6 +144,7 @@ class myTk():
                                 bg="white", fg="black",
                                 textvariable=self.entry[id]['value'])
         self.entry[id]['obj'].pack(side=LEFT, fill=X)
+        return(self.entry[id]['obj'])
 
     def bindentry(self, id, key, callbackfunc):
         self.entry[id]['obj'].bind(key, callbackfunc)
@@ -169,6 +173,7 @@ class myTk():
 
         vsb.config(command=self.lbox[id].yview)
         hsb.config(command=self.lbox[id].xview)
+        return(self.lbox[id])
 
     def bindlist(self, id, key, callbackfunc):
         self.lbox[id].bind(key, callbackfunc)
@@ -212,6 +217,7 @@ class myTk():
                                       variable=self.ckbutton[id]['value'],
                                       command=callbackfunc)
         self.ckbutton[id]['obj'].pack(side=LEFT, fill=X)
+        return(self.ckbutton[id]['obj'])
 
     def getcheckbutton(self, id):
         return(self.ckbutton[id]['value'].get())
@@ -233,6 +239,7 @@ class myTk():
 
         vsb.config(command=self.tbox[id].yview)
         hsb.config(command=self.tbox[id].xview)
+        return(self.tbox[id])
 
     def bindtextbox(self, id, key, callbackfunc):
         self.tbox[id].bind(key, callbackfunc)
@@ -277,6 +284,7 @@ class myTk():
 
         vsb.config(command=self.rotbox[id].yview)
         hsb.config(command=self.rotbox[id].xview)
+        return(self.rotbox[id])
 
     def bindrotextbox(self, id, key, callbackfunc):
         self.rotbox[id].bind(key, callbackfunc)
@@ -302,6 +310,7 @@ class myTk():
     def button(self, desc, color, func):
         self.btn[desc] = Button(text=desc, background=color, command=func)
         self.btn[desc].pack(side='left')
+        return(self.btn[desc])
 
     def setcursor(self, curs):
         if curs != 'watch':
@@ -328,6 +337,7 @@ class myTk():
         self.cbox[id]['obj'] = ttk.Combobox(self.frm, values=values,
                                     textvariable=self.cbox[id]['value'])
         self.cbox[id]['obj'].pack(side=LEFT, fill=X)
+        return(self.cbox[id]['obj'])
 
     def setcombobox(self, id, default):
         self.cbox[id]['value'].set(default)
@@ -347,6 +357,7 @@ class myTk():
                                        value=value,
                                        variable=self.radiobtn[id]['value'])
             self.radiobtn[id]['obj'].pack(side=LEFT, fill=X)
+        return(self.radiobtn[id])
 
     def getradiobutton(self, id):
         return(self.radiobtn[id]['value'].get())
