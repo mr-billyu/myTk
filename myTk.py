@@ -516,14 +516,18 @@ if __name__ == "__main__":
                               "this is a test of rotextbox" + str(i) + "\n")
 
     if 'button' in tests:
-        app.frame('fill')
+        app.frame('')
         if 'textbox' in tests:
-            app.button('copy text', 'white', copy)
-            app.button('paste text', 'LightSteelBlue', paste)
-            app.button('clear text', 'DodgerBlue', clear)
-            app.button('load text', 'tomato', set_textbox)
+            b = app.button('copy text', 'white', copy)
+            # Override default packing of 'copy text' button.
+            b.pack_forget()
+            b.pack()
+
+            b = app.button('paste text', 'LightSteelBlue', paste)
+            b = app.button('clear text', 'DodgerBlue', clear)
+            b = app.button('load text', 'tomato', set_textbox)
         if 'radiobutton' in tests:
-            app.button('radiobutton', 'white', get_radiobutton)
+            b = app.button('radiobutton', 'white', get_radiobutton)
 
     app.root.mainloop()
 
