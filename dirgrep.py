@@ -70,7 +70,7 @@ def main():
     Win = gui.win('Search Pi Notes', '640x480')
 
     gui.frame('fill')
-    menudata = (("file", ("quit", Win.quit)),)
+    menudata = (("file", ("quit", gui.quit)),)
     gui.menubar(menudata)
 
     gui.frame('fill')
@@ -87,7 +87,7 @@ def main():
     if searchfor:
         set_entry_and_search(searchfor)
 
-    Win.mainloop()
+    gui.mainloop()
 
 if __name__ == '__main__':
     main()
