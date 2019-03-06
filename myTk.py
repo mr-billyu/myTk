@@ -6,10 +6,13 @@ from tkinter import ttk
 class myTk():
     '''
     Create Window Object:
-        self = myTk()
+        obj = myTk()
 
     Quit Window Object:
         obj.quit()
+
+    Mainloop:
+        obj.mainloop()
 
     Create Widgets Methods:
         widget = obj.win('title', 'geometry')
@@ -368,6 +371,9 @@ class myTk():
     def quit(self):
         self.root.quit()
 
+    def mainloop(self):
+        self.root.mainloop()
+
 
 '''
 ==========================================================================
@@ -529,6 +535,6 @@ if __name__ == "__main__":
         if 'radiobutton' in tests:
             b = app.button('radiobutton', 'white', get_radiobutton)
 
-    app.root.mainloop()
+    app.mainloop()
 
 
